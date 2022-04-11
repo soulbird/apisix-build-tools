@@ -14,7 +14,7 @@ export_openresty_variables() {
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get update
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y sudo git libreadline-dev lsb-release libssl-dev perl build-essential
-DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends wget gnupg ca-certificates
+DEBIAN_FRONTEND=noninteractive sudo apt-get -y install --no-install-recommends wget gnupg ca-certificates
 wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
 echo "deb http://openresty.org/package/arm64/ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/openresty.list
 DEBIAN_FRONTEND=noninteractive sudo apt-get update
