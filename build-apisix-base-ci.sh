@@ -20,5 +20,8 @@ echo "deb http://openresty.org/package/arm64/ubuntu $(lsb_release -sc) main" | s
 DEBIAN_FRONTEND=noninteractive sudo apt-get update
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y openresty-openssl111-dev openresty-pcre-dev openresty-zlib-dev
 
+arch=$(uname -m | tr '[:upper:]' '[:lower:]')
+echo "arch: $arch"
+
 export_openresty_variables
 ./build-apisix-base.sh
