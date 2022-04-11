@@ -70,7 +70,6 @@ cd ngx_multi_upstream_module || exit 1
 ./patch.sh ../openresty-${or_ver}
 cd ..
 
-
 cd apisix-nginx-module/patch || exit 1
 ./patch.sh ../../openresty-${or_ver}
 cd ../..
