@@ -55,7 +55,9 @@ fi
 if [ "$repo" == wasm-nginx-module ]; then
     cp -r "$prev_workdir" .
 else
-    git clone -b  fix/build_on_arm64 --depth=1 $wasm_nginx_module_ver \
+    #git clone -b  fix/build_on_arm64 --depth=1 $wasm_nginx_module_ver \
+    #    https://github.com/soulbird/wasm-nginx-module.git
+    git clone -b  fix/build_on_arm64 --depth=1 \
         https://github.com/soulbird/wasm-nginx-module.git
 fi
 
