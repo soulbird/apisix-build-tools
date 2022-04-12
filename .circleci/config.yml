@@ -16,7 +16,7 @@ jobs:
       - run:
           name: "build apisix base..."
           command: |
-            sudo ./build-apisix-base-ci.sh
+            sudo BUILD_PATH=~/project BUILD_ARGS=latest build-common.sh
       - run:
           name: "openresty -V"
           command: |
