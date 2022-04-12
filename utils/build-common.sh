@@ -2,10 +2,11 @@
 set -euo pipefail
 set -x
 
-ARCH=         ${ARCH:-`(uname -m | tr '[:upper:]' '[:lower:]')`}
-BUILD_PATH=   ${BUILD_PATH:-`pwd`}
-BUILD_ARGS=   ${BUILD_ARGS}
+ARCH=${ARCH:-`(uname -m | tr '[:upper:]' '[:lower:]')`}
+BUILD_PATH=${BUILD_PATH:-`pwd`}
+BUILD_ARGS=${BUILD_ARGS}
 
+exit 0
 build_apisix_base_rpm() {
     yum -y install centos-release-scl
     yum -y install devtoolset-9 patch wget git make sudo
