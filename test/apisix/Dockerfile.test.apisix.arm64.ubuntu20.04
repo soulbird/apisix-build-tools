@@ -15,7 +15,9 @@ COPY ./output/apisix-base_"${APISIX_VERSION}"-0~"${IMAGE_BASE}${IMAGE_TAG}"_arm6
 COPY ./utils/install-common.sh /install-common.sh
 
 # install etcd
-RUN /install-common.sh install_etcd
+RUN sudo apt-get update \
+    && apt-get install -y wget \
+    && /install-common.sh install_etcd
 
 # install apisix
 RUN set -x \
