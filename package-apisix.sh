@@ -71,5 +71,5 @@ fi
 # Rename deb file with adding $DIST section
 if [ "$PACKAGE_TYPE" == "deb" ]
 then
-	mv /output/apisix_${PACKAGE_VERSION}-${ITERATION}_"${PACKAGE_ARCH}".deb /output/apisix_${PACKAGE_VERSION}-${ITERATION}~${dist}"${PACKAGE_ARCH}".deb
+	mv /output/apisix_${PACKAGE_VERSION}-${ITERATION}_"${PACKAGE_ARCH}".deb /output/apisix_${PACKAGE_VERSION}-${ITERATION}~${dist}"_${PACKAGE_ARCH}".deb
 fi
