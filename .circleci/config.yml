@@ -11,6 +11,8 @@ jobs:
     machine:
       image: ubuntu-2004:202101-01
     resource_class: arm.medium
+    environment:
+      - TEST_VERSION: 0-latest
     steps:
       - checkout
       - run:
@@ -20,15 +22,15 @@ jobs:
       - run:
           name: package apisix-base
           command: |
-            make package type=deb app=apisix-base version=latest
+            make package type=deb app=apisix-base version=${TEST_VERSION}
       - run:
           name: package apisx
           command: |
-            make package type=deb app=apisix version=latest checkout=master image_base=ubuntu image_tag=20.04
+            make package type=deb app=apisix version=${TEST_VERSION} checkout=master image_base=ubuntu image_tag=20.04
       - run:
           name: install apisix deb into container
           command: |
-            docker build -t apache/apisix:latest-deb-test --build-arg APISIX_VERSION=latest -f test/apisix/Dockerfile.test.apisix.arm64.ubuntu20.04 .
+            docker build -t apache/apisix:${TEST_VERSION}-deb-test --build-arg APISIX_VERSION=${TEST_VERSION} -f test/apisix/Dockerfile.test.apisix.arm64.ubuntu20.04 .
       - run:
           name: start apisix and test
           command: |
