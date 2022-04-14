@@ -14,7 +14,7 @@ jobs:
     environment:
       - TEST_VERSION: 0-latest
     steps:
-      - checkout
+      - checkout:
       - run:
           name: install dependencies
           command: |
