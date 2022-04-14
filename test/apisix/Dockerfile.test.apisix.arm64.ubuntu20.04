@@ -11,21 +11,25 @@ ARG IMAGE_TAG
 ENV RUNNING_ETCD_VERSION=${ETCD_VERSION}
 
 COPY ./output/apisix_${APISIX_VERSION}-0~${IMAGE_BASE}${IMAGE_TAG}_arm64.deb /apisix_${APISIX_VERSION}-0~${IMAGE_BASE}${IMAGE_TAG}_arm64.deb
+COPY ./output/apisix-base_"${APISIX_VERSION}"-0~"${IMAGE_BASE}${IMAGE_TAG}"_arm64.deb /apisix-base_"${APISIX_VERSION}"-0~"${IMAGE_BASE}${IMAGE_TAG}"_arm64.deb
 COPY ./utils/install-common.sh /install-common.sh
-COPY ./utils/build-common.sh /build-common.sh
-COPY ./build-apisix-base.sh /build-apisix-base.sh
 
-RUN cd / && version=latest ./build-common.sh build_apisix_base_deb \
-    && ln -s /usr/local/openresty/bin/openresty /usr/local/bin/openresty
 
-# install etcd
-RUN apt-get update \
-    && apt-get install -y wget \
-    && /install-common.sh install_etcd
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y sudo git libreadline-dev lsb-release libssl-dev perl build-essential \
+    && apt-get -y install --no-install-recommends wget gnupg ca-certificates \
+    && wget -O - https://openresty.org/package/pubkey.gpg | apt-key add - \
+    && echo "deb http://openresty.org/package/$arm64/ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/openresty.list \
+    && apt-get update \
+    && apt-get install -y openresty-openssl111-dev openresty-pcre-dev openresty-zlib-dev \
+    && dpkg -i /apisix-base_"${APISIX_VERSION}"-0~"${IMAGE_BASE}${IMAGE_TAG}"_arm64.deb
+
 
 # install apisix
 RUN set -x \
-    && apt install -y libldap2-dev libpcre3 libpcre3-dev \
+    && /install-common.sh install_etcd
+    && apt install -y libldap2-dev \
     && dpkg -i /apisix_${APISIX_VERSION}-0~${IMAGE_BASE}${IMAGE_TAG}_arm64.deb
 
 # start etcd and test
