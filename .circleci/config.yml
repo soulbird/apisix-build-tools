@@ -20,10 +20,6 @@ jobs:
           command: |
             sudo apt-get install -y make
       - run:
-          name: package apisix-base
-          command: |
-            make package type=deb app=apisix-base version=${TEST_VERSION}
-      - run:
           name: package apisx
           command: |
             make package type=deb app=apisix version=${TEST_VERSION} checkout=master image_base=ubuntu image_tag=20.04
