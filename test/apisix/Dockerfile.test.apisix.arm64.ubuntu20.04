@@ -19,7 +19,7 @@ RUN /install-common.sh install_etcd
 
 # install apisix
 RUN set -x \
-    && dpkg -i /apisix-base_"${APISIX_VERSION}"-0~"${IMAGE_BASE}${IMAGE_TAG}"_arm64.deb
+    && dpkg -i /apisix-base_"${APISIX_VERSION}"-0~"${IMAGE_BASE}${IMAGE_TAG}"_arm64.deb \
     && apt install -y libldap2-dev \
     && dpkg -i /apisix_${APISIX_VERSION}-0~${IMAGE_BASE}${IMAGE_TAG}_arm64.deb
 
