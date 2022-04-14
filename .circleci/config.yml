@@ -19,7 +19,7 @@ jobs:
           name: install dependencies
           command: |
             sudo apt-get install -y make
-       - run:
+      - run:
           name: package apisix-base
           command: |
             make package type=deb app=apisix-base version=${TEST_VERSION}
