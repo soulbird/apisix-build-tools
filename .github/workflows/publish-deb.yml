@@ -26,7 +26,7 @@ jobs:
         run: |
           # install publish env deps
           sudo apt-get update
-          sudo apt install -y reprepro gnupg
+          sudo apt install -y reprepro gnupg expect
           mkdir -p "${VAR_RPM_WORKBENCH_DIR}"
           # init env var
           TAG_DATE=$(date +%Y%m%d)

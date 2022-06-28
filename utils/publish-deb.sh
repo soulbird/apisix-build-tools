@@ -61,15 +61,16 @@ Origin: apisix.apache.org
 Label: apisix
 Suite: stable
 Codename: focal
-Version: 2.14.1
 Architectures: amd64
 Components: main
 Description: apisix debian repo
 SignWith: yes
 _EOC_
 
+    chmod a+x ./utils/reprepro_expect
     cd "${1}"/ubuntu
-    reprepro --ask-passphrase -Vb . export
+    ./utils/reprepro_expect "${VAR_GPG_PASSPHRASE}" . export "" ""
+    ls -al
 }
 
 func_repo_clone() {
