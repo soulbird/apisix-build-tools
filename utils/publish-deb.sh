@@ -54,7 +54,8 @@ _EOC_
 func_repo_init() {
     # ${1} - repo workbench path
     mkdir -p "${1}"/ubuntu/{conf, old_debs}
-        cat > "${1}"/ubuntu/conf/distributions <<_EOC_
+    touch "${1}"/ubuntu/conf/distributions
+    cat > "${1}"/ubuntu/conf/distributions <<_EOC_
 Origin: apisix.apache.org
 Label: apisix
 Suite: stable
