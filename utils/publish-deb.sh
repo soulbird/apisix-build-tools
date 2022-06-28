@@ -67,8 +67,12 @@ Description: apisix debian repo
 SignWith: yes
 _EOC_
 
-    chmod a+x ./utils/reprepro_expect
-    ./utils/reprepro_expect "123456" "${1}"/ubuntu export
+    cat > "${HOME}/.gnupg/gpg.conf" <<_EOC_
+pinentry-mode loopback
+passphrase-file /tmp/deb-gpg-publish.passphrase
+_EOC_
+    
+    reprepro --ask-passphrase -Vb "${1}"/ubuntu export
     ls -al
 }
 
