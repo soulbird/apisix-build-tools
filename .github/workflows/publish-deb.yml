@@ -1,0 +1,99 @@
+name: Build and Publish Package
+
+on:
+  push
+
+jobs:
+  publish_apisix:
+    name: Build and Publish deb Package
+    runs-on: ubuntu-18.04
+    timeout-minutes: 60
+    env:
+      VAR_COS_BUCKET_CI: ${{ secrets.VAR_COS_BUCKET_CI }}
+      VAR_COS_BUCKET_REPO: ${{ secrets.VAR_COS_BUCKET_REPO }}
+      VAR_COS_ENDPOINT: ${{ secrets.VAR_COS_ENDPOINT }}
+      VAR_RPM_WORKBENCH_DIR: /tmp/output
+      APISIX_TAG_VERSION: 2.14.1
+      APISIX_BASE_TAG_VERSION: 1.19.9.1.6
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2.3.5
+        with:
+          submodules: recursive
+
+      - name: Init basic publish env
+        run: |
+          # install publish env deps
+          sudo apt-get update
+          sudo apt install -y reprepro gnupg
+          mkdir -p "${VAR_RPM_WORKBENCH_DIR}"
+          # init env var
+          TAG_DATE=$(date +%Y%m%d)
+          echo "TAG_DATE=${TAG_DATE}" >> "$GITHUB_ENV"
+
+      - name: Build apisix deb Package
+        run: |
+          # build apisix
+          make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=ubuntu image_tag=20.04
+          mv ./output/apisix_${APISIX_TAG_VERSION}-0~ubuntu20.04_amd64.deb ${VAR_RPM_WORKBENCH_DIR}
+          echo "TARGET_APP=apisix" >> "$GITHUB_ENV"
+
+      - name: Build apisix-base deb Package
+        run: |
+          # build apisix-base
+          make package type=rpm app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=ubuntu image_tag=20.04
+          mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~ubuntu20.04_amd64.deb ${VAR_RPM_WORKBENCH_DIR}
+          echo "TARGET_APP=apisix-base" >> "$GITHUB_ENV"
+
+      - name: Upload apisix Artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: "apisix_${APISIX_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
+          path: "./apisix_${APISIX_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
+
+      - name: Upload apisix-base Artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: "apisix-base_${APISIX_BASE_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
+          path: "./apisix-base_${APISIX_BASE_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
+
+      - name: deb repo deps init
+        env:
+          TENCENT_COS_SECRETID: ${{ secrets.TENCENT_COS_SECRETID }}
+          TENCENT_COS_SECRETKEY: ${{ secrets.TENCENT_COS_SECRETKEY }}
+        run: |
+          sudo -E ./utils/publish-deb.sh init_cos_utils
+
+      - name: deb repo init
+        run: |
+          sudo -E ./utils/publish-deb.sh repo_init
+          sudo -E ./utils/publish-deb.sh repo_clone
+
+      - name: deb repo package update
+        env:
+          GPG_NAME: ${{ secrets.GPG_NAME }}
+          GPG_MAIL: ${{ secrets.GPG_MAIL }}
+        run: |
+          echo "${{ secrets.DEB_GPG_PRIV_KEY }}" >> /tmp/deb-gpg-publish.private
+          echo "${{ secrets.DEB_GPG_PASSPHRASE }}" >> /tmp/deb-gpg-publish.passphrase
+          echo "${{ secrets.DEB_GPG_PUB_KEY }}" >> /tmp/deb-gpg-publish.public
+          sudo -E ./utils/publish-deb.sh deb_gpg_sign
+          sudo -E ./utils/publish-deb.sh repo_package_sync
+
+      - name: deb repo backup
+        run: |
+          sudo -E ./utils/publish-deb.sh repo_backup
+
+      - name: deb repo refresh
+        run: |
+          sudo -E ./utils/publish-deb.sh repo_repodata_rebuild
+          sudo -E ./utils/publish-deb.sh repo_upload
+
+      - name: deb repo remove backup
+        run: |
+          sudo -E ./utils/publish-deb.sh repo_backup_remove
+
+      - name: deb repo publish
+        run: |
+          sudo -E ./utils/publish-deb.sh repo_publish
