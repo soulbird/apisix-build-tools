@@ -53,7 +53,20 @@ _EOC_
 # =======================================
 func_repo_init() {
     # ${1} - repo workbench path
-    mkdir -p "${1}"/ubuntu
+    mkdir -p "${1}"/ubuntu/{conf, old_debs}
+        cat > "${1}"/ubuntu/conf/distributions <<_EOC_
+Origin: apisix.apache.org
+Label: apisix
+Suite: stable
+Codename: focal jammy trusty
+Version: 2.14.1
+Architectures: amd64
+Components: main
+Description: apisix debian repo
+_EOC_
+
+    cd "${1}"/ubuntu
+    reprepro --ask-passphrase -Vb . export
 }
 
 func_repo_clone() {
@@ -81,8 +94,9 @@ func_repo_backup_remove() {
 
 func_repo_repodata_rebuild() {
     # ${1} - repo parent path
-    find "${1}" -type d -name "deb" \
-        -exec echo "reprepro for: {}" \;
+    find "${1}" -type d -name "*.deb" \
+        -exec echo "reprepro for: {}" \; \
+        -exec reprepro --ask-passphrase -Vb . includedeb focal {} \;
 }
 
 func_repo_repodata_sign() {
@@ -118,16 +132,19 @@ init_cos_utils)
     func_cos_utils_install "${VAR_TENCENT_COS_UTILS_VERSION}"
     func_cos_utils_credential_init "${VAR_COS_ENDPOINT}" "${TENCENT_COS_SECRETID}" "${TENCENT_COS_SECRETKEY}"
     ;;
+deb_gpg_init)
+    func_gpg_key_load "${VAR_GPG_PRIV_KET}" "${VAR_GPG_PASSPHRASE}"
+    ;;
 repo_init)
     # create basic repo directory structure
     # useful when a new repo added
     func_repo_init /tmp
     ;;
+repo_clone)
+    func_repo_clone "${VAR_COS_BUCKET_REPO}" "ubuntu" /tmp/ubuntu/old_debs
+    ;;
 repo_backup)
     func_repo_backup "${VAR_COS_BUCKET_REPO}" "ubuntu" "${TAG_DATE}"
-    ;;
-repo_clone)
-    func_repo_clone "${VAR_COS_BUCKET_REPO}" "ubuntu" /tmp/ubuntu
     ;;
 repo_package_sync)
     VAR_REPO_MAJOR_VER=(focal jammy trusty)
@@ -138,20 +155,18 @@ repo_package_sync)
     done
     ;;
 repo_repodata_rebuild)
-    func_repo_repodata_rebuild /tmp/ubuntu
-    func_repo_repodata_sign /tmp/ubuntu
+    func_repo_repodata_rebuild /tmp/ubuntu/old_debs
+    #func_repo_repodata_sign /tmp/ubuntu
     ;;
 repo_upload)
-    func_repo_upload /tmp/centos "${VAR_COS_BUCKET_CI}" "centos"
+    func_repo_upload /tmp/ubuntu/dist "${VAR_COS_BUCKET_CI}" "ubuntu"
+    func_repo_upload /tmp/ubuntu/pool "${VAR_COS_BUCKET_CI}" "ubuntu"
     ;;
 repo_publish)
-    func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "centos"
+    func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "ubuntu"
     ;;
 repo_backup_remove)
     func_repo_backup_remove "${VAR_COS_BUCKET_REPO}" "centos" "${TAG_DATE}"
-    ;;
-deb_gpg_sign)
-    func_gpg_key_load "${VAR_GPG_PRIV_KET}" "${VAR_GPG_PASSPHRASE}"
     ;;
 *)
     echo "Unknown method!"
