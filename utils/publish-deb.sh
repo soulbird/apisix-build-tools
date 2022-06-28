@@ -65,6 +65,7 @@ Version: 2.14.1
 Architectures: amd64
 Components: main
 Description: apisix debian repo
+SignWith: yes
 _EOC_
 
     cd "${1}"/ubuntu
