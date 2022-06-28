@@ -12,7 +12,7 @@ env
 VAR_TENCENT_COS_UTILS_VERSION=${VAR_TENCENT_COS_UTILS_VERSION:-v0.11.0-beta}
 VAR_RPM_WORKBENCH_DIR=${VAR_RPM_WORKBENCH_DIR:-/tmp/output}
 VAR_GPG_PRIV_KET=${VAR_GPG_PRIV_KET:-/tmp/dep-gpg-publish.private}
-VAR_GPG_PASSPHRASE=${VAR_GPG_PASSPHRASE:-/tmp/dep-gpg-publish.passphrase}
+VAR_GPG_PASSPHRASE=${VAR_GPG_PASSPHRASE:-/tmp/deb-gpg-publish.passphrase}
 
 
 func_gpg_key_load() {
