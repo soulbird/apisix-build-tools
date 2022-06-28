@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-18.04
     timeout-minutes: 60
     env:
-      VAR_COS_BUCKET_CI: ${{ cos.VAR_COS_BUCKET_CI }}
-      VAR_COS_BUCKET_REPO: ${{ cos.VAR_COS_BUCKET_REPO }}
-      VAR_COS_ENDPOINT: ${{ cos.VAR_COS_ENDPOINT }}
+      VAR_COS_BUCKET_CI: ${{ secrets.VAR_COS_BUCKET_CI }}
+      VAR_COS_BUCKET_REPO: ${{ secrets.VAR_COS_BUCKET_REPO }}
+      VAR_COS_ENDPOINT: ${{ secrets.VAR_COS_ENDPOINT }}
       VAR_RPM_WORKBENCH_DIR: /tmp/output
       APISIX_TAG_VERSION: 2.14.1
       APISIX_BASE_TAG_VERSION: 1.19.9.1.6
@@ -34,8 +34,8 @@ jobs:
 
       - name: deb repo deps init
         env:
-          TENCENT_COS_SECRETID: ${{ cos.TENCENT_COS_SECRETID }}
-          TENCENT_COS_SECRETKEY: ${{ cos.TENCENT_COS_SECRETKEY }}
+          TENCENT_COS_SECRETID: ${{ secrets.TENCENT_COS_SECRETID }}
+          TENCENT_COS_SECRETKEY: ${{ secrets.TENCENT_COS_SECRETKEY }}
         run: |
           sudo -E ./utils/publish-deb.sh init_cos_utils
 
@@ -46,12 +46,12 @@ jobs:
 
       - name: deb repo package update
         env:
-          GPG_NAME: ${{ cos.GPG_NAME }}
-          GPG_MAIL: ${{ cos.GPG_MAIL }}
+          GPG_NAME: ${{ secrets.GPG_NAME }}
+          GPG_MAIL: ${{ secrets.GPG_MAIL }}
         run: |
-          echo "${{ cos.DEB_GPG_PRIV_KEY }}" >> /tmp/deb-gpg-publish.private
-          echo "${{ cos.DEB_GPG_PASSPHRASE }}" >> /tmp/deb-gpg-publish.passphrase
-          echo "${{ cos.DEB_GPG_PUB_KEY }}" >> /tmp/deb-gpg-publish.public
+          echo "${{ secrets.DEB_GPG_PRIV_KEY }}" >> /tmp/deb-gpg-publish.private
+          echo "${{ secrets.DEB_GPG_PASSPHRASE }}" >> /tmp/deb-gpg-publish.passphrase
+          echo "${{ secrets.DEB_GPG_PUB_KEY }}" >> /tmp/deb-gpg-publish.public
           sudo -E ./utils/publish-deb.sh deb_gpg_sign
           sudo -E ./utils/publish-deb.sh repo_package_sync
 
