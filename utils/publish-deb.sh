@@ -67,6 +67,8 @@ func_repo_backup() {
     # ${1} - bucket name
     # ${2} - COS path
     # ${3} - backup tag
+    echo "${VAR_COS_ENDPOINT}"
+    echo "$1" "$2" "$3"
     coscli -e "${VAR_COS_ENDPOINT}" cp -r "cos://${1}/packages/${2}" "cos://${1}/packages/backup/${2}_${3}"
 }
 
