@@ -68,7 +68,7 @@ SignWith: yes
 _EOC_
 
     chmod a+x ./utils/reprepro_expect
-    ./utils/reprepro_expect "${VAR_GPG_PASSPHRASE}" "${1}"/ubuntu export
+    ./utils/reprepro_expect "123456" "${1}"/ubuntu export
     ls -al
 }
 
