@@ -60,7 +60,7 @@ func_repo_init() {
 Origin: apisix.apache.org
 Label: apisix
 Suite: stable
-Codename: focal jammy trusty
+Codename: focal
 Version: 2.14.1
 Architectures: amd64
 Components: main
