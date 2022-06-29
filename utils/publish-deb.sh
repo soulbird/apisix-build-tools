@@ -71,8 +71,8 @@ _EOC_
 pinentry-mode loopback
 passphrase-file /tmp/deb-gpg-publish.passphrase
 _EOC_
-    
-    reprepro --ask-passphrase -Vb "${1}"/ubuntu export
+
+    #reprepro --ask-passphrase -Vb "${1}"/ubuntu export
 }
 
 func_repo_clone() {
@@ -86,8 +86,6 @@ func_repo_backup() {
     # ${1} - bucket name
     # ${2} - COS path
     # ${3} - backup tag
-    echo "${VAR_COS_ENDPOINT}"
-    echo "$1" "$2" "$3"
     coscli -e "${VAR_COS_ENDPOINT}" cp -r "cos://${1}/packages/${2}" "cos://${1}/packages/backup/${2}_${3}"
 }
 
@@ -112,7 +110,7 @@ func_repo_upload() {
     # ${3} - COS path
     #coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${3}"
     coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/dists" "cos://${2}/packages/${3}/"
-    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/pool" "cos://${2}/packages/${3}/"
+    #coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/pool" "cos://${2}/packages/${3}/"
 }
 
 func_repo_publish() {
