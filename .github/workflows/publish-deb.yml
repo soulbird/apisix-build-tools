@@ -31,7 +31,8 @@ jobs:
           # init env var
           TAG_DATE=$(date +%Y%m%d)
           echo "TAG_DATE=${TAG_DATE}" >> "$GITHUB_ENV"
-            - name: Build apisix deb Package
+
+      - name: Build apisix deb Package
         run: |
           # build apisix
           make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=ubuntu image_tag=20.04
