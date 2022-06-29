@@ -73,7 +73,6 @@ passphrase-file /tmp/deb-gpg-publish.passphrase
 _EOC_
     
     reprepro --ask-passphrase -Vb "${1}"/ubuntu export
-    ls -al
 }
 
 func_repo_clone() {
@@ -103,22 +102,16 @@ func_repo_repodata_rebuild() {
     # ${1} - repo parent path
     find "${1}" -type d -name "*.deb" \
         -exec echo "reprepro for: {}" \; \
-        -exec reprepro --ask-passphrase -Vb . includedeb focal {} \;
+        -exec reprepro --ask-passphrase -Vb "${2}" includedeb focal {} \;
 }
 
-func_repo_repodata_sign() {
-    # ${1} - repo parent path
-    find "${1}" -type f -name "*repomd.xml" \
-        -exec echo "sign repodata for: {}" \; \
-        -exec gpg --batch --pinentry-mode loopback --passphrase-file "${VAR_GPG_PASSPHRASE}" --detach-sign --armor {} \;
-}
 
 func_repo_upload() {
     # ${1} - local path
     # ${2} - bucket name
     # ${3} - COS path
-    coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${3}"
-    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}" "cos://${2}/packages/${3}"
+    #coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${3}"
+    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/dist" "${1}/pool" "cos://${2}/packages/${3}"
 }
 
 func_repo_publish() {
@@ -148,26 +141,16 @@ repo_init)
     func_repo_init /tmp
     ;;
 repo_clone)
-    func_repo_clone "${VAR_COS_BUCKET_REPO}" "ubuntu" /tmp/ubuntu/old_debs
+    func_repo_clone "${VAR_COS_BUCKET_REPO}" "ubuntu" /tmp/ubuntu
+    ;;
+repo_repodata_rebuild)
+    func_repo_repodata_rebuild "${VAR_RPM_WORKBENCH_DIR}" /tmp/ubuntu
     ;;
 repo_backup)
     func_repo_backup "${VAR_COS_BUCKET_REPO}" "ubuntu" "${TAG_DATE}"
     ;;
-repo_package_sync)
-    VAR_REPO_MAJOR_VER=(focal jammy trusty)
-    for i in "${VAR_REPO_MAJOR_VER[@]}"; do
-        find "${VAR_RPM_WORKBENCH_DIR}" -type f -name "*.deb" \
-            -exec echo "repo sync for: {}" \; \
-            -exec cp -a {} /tmp/ubuntu/"${i}"/amd64 \;
-    done
-    ;;
-repo_repodata_rebuild)
-    func_repo_repodata_rebuild /tmp/ubuntu/old_debs
-    #func_repo_repodata_sign /tmp/ubuntu
-    ;;
 repo_upload)
-    func_repo_upload /tmp/ubuntu/dist "${VAR_COS_BUCKET_CI}" "ubuntu"
-    func_repo_upload /tmp/ubuntu/pool "${VAR_COS_BUCKET_CI}" "ubuntu"
+    func_repo_upload /tmp/ubuntu "${VAR_COS_BUCKET_CI}" "ubuntu"
     ;;
 repo_publish)
     func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "ubuntu"
