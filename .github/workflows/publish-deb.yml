@@ -12,7 +12,7 @@ jobs:
       VAR_COS_BUCKET_CI: ${{ secrets.VAR_COS_BUCKET_CI }}
       VAR_COS_BUCKET_REPO: ${{ secrets.VAR_COS_BUCKET_REPO }}
       VAR_COS_ENDPOINT: ${{ secrets.VAR_COS_ENDPOINT }}
-      VAR_RPM_WORKBENCH_DIR: /tmp/output
+      VAR_DEB_WORKBENCH_DIR: /tmp/output
       APISIX_TAG_VERSION: 2.14.1
       APISIX_BASE_TAG_VERSION: 1.19.9.1.6
 
@@ -27,7 +27,7 @@ jobs:
           # install publish env deps
           sudo apt-get update
           sudo apt install -y reprepro gnupg expect
-          mkdir -p "${VAR_RPM_WORKBENCH_DIR}"
+          mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
           # init env var
           TAG_DATE=$(date +%Y%m%d)
           echo "TAG_DATE=${TAG_DATE}" >> "$GITHUB_ENV"
@@ -36,14 +36,14 @@ jobs:
         run: |
           # build apisix
           make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=ubuntu image_tag=20.04
-          mv ./output/apisix_${APISIX_TAG_VERSION}-0~ubuntu20.04_amd64.deb ${VAR_RPM_WORKBENCH_DIR}
+          mv ./output/apisix_${APISIX_TAG_VERSION}-0~ubuntu20.04_amd64.deb ${VAR_DEB_WORKBENCH_DIR}
           echo "TARGET_APP=apisix" >> "$GITHUB_ENV"
 
       - name: Build apisix-base deb Package
         run: |
           # build apisix-base
           make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=ubuntu image_tag=20.04
-          mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~ubuntu20.04_amd64.deb ${VAR_RPM_WORKBENCH_DIR}
+          mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~ubuntu20.04_amd64.deb ${VAR_DEB_WORKBENCH_DIR}
           echo "TARGET_APP=apisix-base" >> "$GITHUB_ENV"
 
       - name: Upload apisix Artifact

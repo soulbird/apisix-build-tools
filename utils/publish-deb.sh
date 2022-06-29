@@ -10,7 +10,7 @@ env
 # Runtime default config
 # =======================================
 VAR_TENCENT_COS_UTILS_VERSION=${VAR_TENCENT_COS_UTILS_VERSION:-v0.11.0-beta}
-VAR_RPM_WORKBENCH_DIR=${VAR_RPM_WORKBENCH_DIR:-/tmp/output}
+VAR_DEB_WORKBENCH_DIR=${VAR_DEB_WORKBENCH_DIR:-/tmp/output}
 VAR_GPG_PRIV_KET=${VAR_GPG_PRIV_KET:-/tmp/deb-gpg-publish.private}
 VAR_GPG_PASSPHRASE=${VAR_GPG_PASSPHRASE:-/tmp/deb-gpg-publish.passphrase}
 
@@ -98,7 +98,7 @@ func_repo_backup_remove() {
 
 func_repo_repodata_rebuild() {
     # ${1} - repo parent path
-    find "${1}" -type d -name "*.deb" \
+    find "${1}" -type f -name "*.deb" \
         -exec echo "reprepro for: {}" \; \
         -exec reprepro --ask-passphrase -Vb "${2}" includedeb focal {} \;
 }
@@ -143,7 +143,7 @@ repo_clone)
     func_repo_clone "${VAR_COS_BUCKET_REPO}" "ubuntu" /tmp/ubuntu
     ;;
 repo_repodata_rebuild)
-    func_repo_repodata_rebuild "${VAR_RPM_WORKBENCH_DIR}" /tmp/ubuntu
+    func_repo_repodata_rebuild "${VAR_DEB_WORKBENCH_DIR}" /tmp/ubuntu
     ;;
 repo_backup)
     func_repo_backup "${VAR_COS_BUCKET_REPO}" "ubuntu" "${TAG_DATE}"
