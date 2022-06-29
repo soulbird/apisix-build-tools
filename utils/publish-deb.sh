@@ -54,7 +54,6 @@ _EOC_
 func_repo_init() {
     # ${1} - repo workbench path
     mkdir -p "${1}"/ubuntu/conf
-    mkdir -p "${1}"/ubuntu/old_debs
     touch "${1}"/ubuntu/conf/distributions
     cat > "${1}"/ubuntu/conf/distributions <<_EOC_
 Origin: apisix.apache.org
@@ -93,7 +92,7 @@ func_repo_backup_remove() {
     # ${1} - bucket name
     # ${2} - COS path
     # ${3} - backup tag
-    coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${1}/packages/backup/${2}_${3}"
+    coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${1}/packages/backup/${2}_${3}" || true
 }
 
 func_repo_repodata_rebuild() {
@@ -109,8 +108,10 @@ func_repo_upload() {
     # ${2} - bucket name
     # ${3} - COS path
     #coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${3}"
-    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/dists" "cos://${2}/packages/${3}/" || true
-    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/pool" "cos://${2}/packages/${3}/" || true
+    mkdir "${1}"/ubuntu
+    mv "${1}"/dists ubuntu/
+    mv "${1}"/pool ubuntu/
+    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/ubuntu" "cos://${2}/packages/${3}/" || true
 }
 
 func_repo_publish() {
