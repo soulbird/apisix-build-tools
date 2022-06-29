@@ -72,7 +72,7 @@ pinentry-mode loopback
 passphrase-file /tmp/deb-gpg-publish.passphrase
 _EOC_
 
-    #reprepro --ask-passphrase -Vb "${1}"/ubuntu export
+    reprepro --ask-passphrase -Vb "${1}"/ubuntu export
 }
 
 func_repo_clone() {
