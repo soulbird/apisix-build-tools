@@ -110,7 +110,7 @@ func_repo_upload() {
     # ${3} - COS path
     #coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${3}"
     coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/dists" "cos://${2}/packages/${3}/" || true
-    #coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/pool" "cos://${2}/packages/${3}/" || true
+    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/pool" "cos://${2}/packages/${3}/" || true
 }
 
 func_repo_publish() {
