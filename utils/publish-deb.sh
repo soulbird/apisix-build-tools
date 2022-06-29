@@ -109,8 +109,8 @@ func_repo_upload() {
     # ${3} - COS path
     #coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${3}"
     mkdir "${1}"/ubuntu
-    mv "${1}"/dists ubuntu/
-    mv "${1}"/pool ubuntu/
+    mv "${1}"/dists "${1}"/ubuntu/
+    mv "${1}"/pool "${1}"/ubuntu/
     coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/ubuntu" "cos://${2}/packages/${3}/" || true
 }
 
