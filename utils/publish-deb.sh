@@ -151,11 +151,11 @@ repo_backup)
 repo_upload)
     func_repo_upload /tmp/ubuntu "${VAR_COS_BUCKET_CI}" "ubuntu"
     ;;
+repo_backup_remove)
+    func_repo_backup_remove "${VAR_COS_BUCKET_REPO}" "ubuntu" "${TAG_DATE}"
+    ;;
 repo_publish)
     func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "ubuntu"
-    ;;
-repo_backup_remove)
-    func_repo_backup_remove "${VAR_COS_BUCKET_REPO}" "centos" "${TAG_DATE}"
     ;;
 *)
     echo "Unknown method!"
