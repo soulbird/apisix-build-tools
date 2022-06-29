@@ -111,7 +111,7 @@ func_repo_upload() {
     # ${2} - bucket name
     # ${3} - COS path
     #coscli -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${3}"
-    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/dist" "${1}/pool" "cos://${2}/packages/${3}/"
+    coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/dist" "cos://${2}/packages/${3}/"
     coscli -e "${VAR_COS_ENDPOINT}" cp -r "${1}/pool" "cos://${2}/packages/${3}/"
 }
 
