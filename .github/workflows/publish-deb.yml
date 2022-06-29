@@ -56,7 +56,7 @@ jobs:
 
       - name: deb repo package update
         run: |
-          sudo -E ./utils/publish-deb.sh repo_package_sync
+          sudo -E ./utils/publish-deb.sh repo_repodata_rebuild
 
       - name: deb repo backup
         run: |
@@ -64,7 +64,6 @@ jobs:
 
       - name: deb repo refresh
         run: |
-          sudo -E ./utils/publish-deb.sh repo_repodata_rebuild
           sudo -E ./utils/publish-deb.sh repo_upload
 
       - name: deb repo remove backup
