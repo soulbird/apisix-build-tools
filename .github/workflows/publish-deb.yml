@@ -46,14 +46,14 @@ jobs:
       - name: Upload apisix Artifact
         uses: actions/upload-artifact@v2.2.3
         with:
-          name: "apisix_${APISIX_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
-          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix_${APISIX_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
+          name: "apisix_${{ env.APISIX_TAG_VERSION }}-0~ubuntu20.04_amd64.deb"
+          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix_${{ env.APISIX_TAG_VERSION }}-0~ubuntu20.04_amd64.deb"
 
       - name: Upload apisix-base Artifact
         uses: actions/upload-artifact@v2.2.3
         with:
-          name: "apisix-base_${APISIX_BASE_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
-          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix-base_${APISIX_BASE_TAG_VERSION}-0~ubuntu20.04_amd64.deb"
+          name: "apisix-base_${{ env.APISIX_BASE_TAG_VERSION }}-0~ubuntu20.04_amd64.deb"
+          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix-base_${{ env.APISIX_BASE_TAG_VERSION }}-0~ubuntu20.04_amd64.deb"
 
       - name: deb repo deps init
         env:
