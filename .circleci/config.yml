@@ -130,6 +130,14 @@ jobs:
             tar -zxvf v0.11.0-beta.tar.gz
             cd coscli-0.11.0-beta && go build
             sudo mv coscli /usr/local/bin/
+            cat > "${HOME}/.cos.yaml" <<_EOC_
+cos:
+  base:
+    secretid: ${TENCENT_COS_SECRETID}
+    secretkey: ${TENCENT_COS_SECRETKEY}
+    sessiontoken: ""
+    protocol: https
+_EOC_
       
       - run:
           name: build apisix deb package
@@ -148,16 +156,18 @@ jobs:
           command: |
             find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apisix_*.deb" \
               -exec echo "upload : {}" \; \
-              -exec /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
+              -exec sh -c 'file=$(basename {}); \
+              			   /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
                            -k "${TENCENT_COS_SECRETKEY}" \
                            -e "${VAR_COS_ENDPOINT}" \
-                           cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix/{}" \;
+                           cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix/{}"' \;
             find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apisix-base*.deb" \
-              -exec echo "upload : {}" \; \
-              -exec /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
-                           -k "${TENCENT_COS_SECRETKEY}" \
-                           -e "${VAR_COS_ENDPOINT}" \
-                           cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix-base/{}" \;
+                          -exec echo "upload : {}" \; \
+                          -exec sh -c 'file=$(basename {}); \
+                                  /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
+                                      -k "${TENCENT_COS_SECRETKEY}" \
+                                      -e "${VAR_COS_ENDPOINT}" \
+                                      cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix-base/{}"' \;
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
