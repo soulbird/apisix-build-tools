@@ -156,12 +156,12 @@ jobs:
             find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apisix_*.deb" \
               -exec echo "upload : {}" \; \
               -exec sh -c 'file=$(basename {}); \
-              			   /usr/local/bin/coscli -e "${VAR_COS_ENDPOINT}" \
+              			   sudo /usr/local/bin/coscli -e "${VAR_COS_ENDPOINT}" \
                                       cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix/${file}"' \;
             find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apisix-base*.deb" \
-                          -exec echo "upload : {}" \; \
-                          -exec sh -c 'file=$(basename {}); \
-                                  /usr/local/bin/coscli -e "${VAR_COS_ENDPOINT}" \
+                -exec echo "upload : {}" \; \
+                -exec sh -c 'file=$(basename {}); \
+                       sudo /usr/local/bin/coscli -e "${VAR_COS_ENDPOINT}" \
                                       cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix-base/${file}"' \;
 
 # Invoke jobs via workflows
