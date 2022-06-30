@@ -111,6 +111,54 @@ jobs:
                                    api7/apisix-base:dev-x86_64
             docker manifest push api7/apisix-base:dev
 
+  build-and-publish-debian-arm64-package:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    environment:
+      - VAR_DEB_WORKBENCH_DIR: /tmp/output
+      - APISIX_TAG_VERSION: 2.14.1
+      - APISIX_BASE_TAG_VERSION: 1.19.9.1.6
+    
+    steps:
+      - checkout
+      - run:
+          name: Init basic publish env
+          command: |
+            mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
+            wget https://github.com/tencentyun/coscli/archive/refs/tags/v0.11.0-beta.tar.gz
+            tar -zxvf v0.11.0-beta.tar.gz
+            cd coscli-0.11.0-beta && go build
+            sudo mv coscli /usr/local/bin/
+      
+      - run:
+          name: build apisix deb package
+          command: |
+            make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=debian image_tag=bullseye-slim
+            mv ./output/apisix_${APISIX_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
+      
+      - run:
+          name: build apisix-base deb package
+          command: |
+            make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=debian image_tag=bullseye-slim
+            mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
+
+      - run:
+          name: upload deb package
+          command: |
+            find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apsix_*.deb" \
+              -exec echo "upload : {}" \; \
+              -exec /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
+                           -k "${TENCENT_COS_SECRETKEY}" \
+                           -e "${VAR_COS_ENDPOINT}" \
+                           cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix/{}" \;
+            find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apsix-base*.deb" \
+              -exec echo "upload : {}" \; \
+              -exec /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
+                           -k "${TENCENT_COS_SECRETKEY}" \
+                           -e "${VAR_COS_ENDPOINT}" \
+                           cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix-base/{}" \;
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -135,3 +183,9 @@ workflows:
           requires:
             - build-and-push-apisix-base-dev-arm
             - build-and-push-apisix-base-dev-x86
+  build-and-publish-debian-package:
+    jobs:
+      - build-and-publish-debian-arm64-package:
+        filter:
+          branches:
+            only: feat/debian_arm64
