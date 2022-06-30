@@ -166,8 +166,8 @@ workflows:
     jobs:
       - build:
         filters:
-            branches:
-              only: master
+          branches:
+            only: master
   build-and-push-apisix-base-dev:
     triggers:
       - schedule:
