@@ -64,10 +64,10 @@ init_cos_utils)
     func_cos_utils_credential_init "${VAR_COS_ENDPOINT}" "${TENCENT_COS_SECRETID}" "${TENCENT_COS_SECRETKEY}"
     ;;
 repo_upload)
-    func_repo_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_CI}" "ubuntu"
+    func_repo_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_CI}" "debian"
     ;;
 repo_publish)
-    func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "ubuntu"
+    func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "debian"
     ;;
 *)
     echo "Unknown method!"
