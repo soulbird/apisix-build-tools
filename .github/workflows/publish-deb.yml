@@ -24,9 +24,6 @@ jobs:
 
       - name: Init basic publish env
         run: |
-          # install publish env deps
-          sudo apt-get update
-          sudo apt install -y reprepro gnupg
           mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
           # init env var
           TAG_DATE=$(date +%Y%m%d)
@@ -65,36 +62,9 @@ jobs:
         run: |
           sudo -E ./utils/publish-deb.sh init_cos_utils
 
-      - name: deb repo gpg init
-        env:
-          GPG_NAME: ${{ secrets.GPG_NAME }}
-          GPG_MAIL: ${{ secrets.GPG_MAIL }}
-        run: |
-          echo "${{ secrets.DEB_GPG_PRIV_KEY }}" >> /tmp/deb-gpg-publish.private
-          echo "${{ secrets.DEB_GPG_PASSPHRASE }}" >> /tmp/deb-gpg-publish.passphrase
-          echo "${{ secrets.DEB_GPG_PUB_KEY }}" >> /tmp/deb-gpg-publish.public
-          sudo -E ./utils/publish-deb.sh deb_gpg_init
-
-      - name: deb repo init
-        run: |
-          sudo -E ./utils/publish-deb.sh repo_init
-          sudo -E ./utils/publish-deb.sh repo_clone
-
-      - name: deb repo package update
-        run: |
-          sudo -E ./utils/publish-deb.sh repo_repodata_rebuild
-
-      - name: deb repo backup
-        run: |
-          sudo -E ./utils/publish-deb.sh repo_backup
-
-      - name: deb repo refresh
+      - name: deb upload
         run: |
           sudo -E ./utils/publish-deb.sh repo_upload
-
-      - name: deb repo remove backup
-        run: |
-          sudo -E ./utils/publish-deb.sh repo_backup_remove
 
       - name: deb repo publish
         run: |
