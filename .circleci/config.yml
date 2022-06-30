@@ -133,8 +133,8 @@ jobs:
             cat > "${HOME}/.cos.yaml" \<< EOF >
             cos:
               base:
-                secretid: ${TENCENT_COS_SECRETID}
-                secretkey: ${TENCENT_COS_SECRETKEY}
+                secretid: \${TENCENT_COS_SECRETID}
+                secretkey: \${TENCENT_COS_SECRETKEY}
                 protocol: https
             EOF
       
