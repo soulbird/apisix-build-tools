@@ -146,13 +146,13 @@ jobs:
       - run:
           name: upload deb package
           command: |
-            find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apsix_*.deb" \
+            find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apisix_*.deb" \
               -exec echo "upload : {}" \; \
               -exec /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
                            -k "${TENCENT_COS_SECRETKEY}" \
                            -e "${VAR_COS_ENDPOINT}" \
                            cp {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix/{}" \;
-            find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apsix-base*.deb" \
+            find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apisix-base*.deb" \
               -exec echo "upload : {}" \; \
               -exec /usr/local/bin/coscli -i "${TENCENT_COS_SECRETID}" \
                            -k "${TENCENT_COS_SECRETKEY}" \
