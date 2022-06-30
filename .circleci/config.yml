@@ -130,11 +130,11 @@ jobs:
             tar -zxvf v0.11.0-beta.tar.gz
             cd coscli-0.11.0-beta && go build
             sudo mv coscli /usr/local/bin/
-            cat > "${HOME}/.cos.yaml" \<< EOF >
+            cat << EOF > "${HOME}/.cos.yaml"
             cos:
               base:
-                secretid: $TENCENT_COS_SECRETID
-                secretkey: $TENCENT_COS_SECRETKEY
+                secretid: ${TENCENT_COS_SECRETID}
+                secretkey: ${TENCENT_COS_SECRETKEY}
                 protocol: https
             EOF
       
