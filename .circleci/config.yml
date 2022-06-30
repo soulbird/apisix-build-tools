@@ -135,7 +135,6 @@ jobs:
               base:
                 secretid: ${TENCENT_COS_SECRETID}
                 secretkey: ${TENCENT_COS_SECRETKEY}
-                sessiontoken: ""
                 protocol: https
             EOF
       
