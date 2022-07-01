@@ -222,7 +222,7 @@ workflows:
   build-and-publish-debian-package:
     jobs:
       - build-and-publish-debian-arm64-package:
-        aaa: "apisix/2.14.1"
-        filter:
-          tags:
-            only: /^apisix.*/
+          aaa: "apisix/2.14.1"
+          filters:
+            tags:
+              only: /^apisix.*/
