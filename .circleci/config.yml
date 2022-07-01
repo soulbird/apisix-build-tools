@@ -117,8 +117,8 @@ jobs:
     resource_class: arm.medium
     environment:
       - VAR_DEB_WORKBENCH_DIR: /tmp/output
-      - APISIX_TAG_VERSION: 2.14.1
-      - APISIX_BASE_TAG_VERSION: 1.19.9.1.6
+      - APISIX_TAG_VERSION: << parameters.tag_version >>
+      - APISIX_BASE_TAG_VERSION: << parameters.tag_version >>
     
     steps:
       - checkout
@@ -137,18 +137,35 @@ jobs:
                 secretkey: ${TENCENT_COS_SECRETKEY}
                 protocol: https
             EOF
-      
+
       - run:
-          name: build apisix deb package
+          name: Extract tags name and version
           command: |
-            make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=debian image_tag=bullseye-slim
-            mv ./output/apisix_${APISIX_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
-      
-      - run:
-          name: build apisix-base deb package
-          command: |
-            make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=debian image_tag=bullseye-slim
-            mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
+            echo 'export TAG_TYPE=$(echo ${CIRCLE_TAG##*/})' >> $BASH_ENV
+            echo 'export APISIX_TAG_VERSION=$(echo ${CIRCLE_TAG%%/*}))' >> $BASH_ENV
+            echo 'export APISIX_BASE_TAG_VERSION=$(echo ${CIRCLE_TAG%%/*}))' >> $BASH_ENV
+            source $BASH_ENV
+
+      - when:
+          condition:
+            #matches: { pattern: "^apisix/*", value: <<pipeline.git.tag>>}
+            equal: [ "apisx", "${TAG_TYPE}" ]
+          steps:
+            - run:
+                name: build apisix deb package
+                command: |
+                  make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=debian image_tag=bullseye-slim
+                  mv ./output/apisix_${APISIX_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
+      - unless:
+          condition:
+            #matches: { pattern: "^apisix-base/*", value: <<pipeline.git.tag>>}
+            equal: [ "apisx-base", "${TAG_TYPE}" ]
+          steps:
+            - run:
+                name: build apisix-base deb package
+                command: |
+                  make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=debian image_tag=bullseye-slim
+                  mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
 
       - run:
           name: upload deb package
@@ -192,5 +209,5 @@ workflows:
     jobs:
       - build-and-publish-debian-arm64-package:
         filter:
-          branches:
-            only: feat/debian_arm64
+          tags:
+            only: /^apisix.*/
