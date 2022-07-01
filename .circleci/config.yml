@@ -161,6 +161,8 @@ jobs:
             - run:
                 name: build apisix deb package
                 command: |
+                  TAG_NAME=apisix/2.14.1
+                  APISIX_TAG_VERSION=$(echo ${TAG_NAME##*/})
                   echo "apisix version: $APISIX_TAG_VERSION"
                   make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=${VAR_PACKAGE_OS} image_tag=${VAR_PACKAGE_OS_RELEASE}
                   mv ./output/apisix_${APISIX_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
@@ -174,6 +176,7 @@ jobs:
             - run:
                 name: build apisix-base deb package
                 command: |
+                  APISIX_BASE_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix-base version: $APISIX_BASE_TAG_VERSION"
                   make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=${VAR_PACKAGE_OS} image_tag=${VAR_PACKAGE_OS_RELEASE}
                   mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
