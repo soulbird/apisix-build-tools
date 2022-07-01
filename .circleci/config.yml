@@ -151,6 +151,8 @@ jobs:
             echo 'export APISIX_BASE_TAG_VERSION=$(echo ${TAG_NAME##*/})' >> $BASH_ENV
             source $BASH_ENV
 
+            echo "apisix version: $APISIX_TAG_VERSION"
+
       - when:
           condition: << parameters.aaa >>
             #matches: { pattern: "^apisix//*", value: << parameters.aaa >> }
