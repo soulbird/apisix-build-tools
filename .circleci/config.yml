@@ -142,8 +142,8 @@ jobs:
           name: Extract tags name and version
           command: |
             echo 'export TAG_TYPE=$(echo ${CIRCLE_TAG##*/})' >> $BASH_ENV
-            echo 'export APISIX_TAG_VERSION=$(echo ${CIRCLE_TAG%%/*}))' >> $BASH_ENV
-            echo 'export APISIX_BASE_TAG_VERSION=$(echo ${CIRCLE_TAG%%/*}))' >> $BASH_ENV
+            echo 'export APISIX_TAG_VERSION=$(echo ${CIRCLE_TAG%%/*})' >> $BASH_ENV
+            echo 'export APISIX_BASE_TAG_VERSION=$(echo ${CIRCLE_TAG%%/*})' >> $BASH_ENV
             source $BASH_ENV
 
       - when:
