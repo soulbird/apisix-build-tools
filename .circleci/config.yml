@@ -143,9 +143,9 @@ jobs:
           command: |
             #TAG_NAME=${CIRCLE_TAG}
             TAG_NAME=apisix/2.14.1
-            echo 'export TAG_TYPE=$(echo ${TAG_NAME##*/})' >> $BASH_ENV
-            echo 'export APISIX_TAG_VERSION=$(echo ${TAG_NAME%%/*})' >> $BASH_ENV
-            echo 'export APISIX_BASE_TAG_VERSION=$(echo ${TAG_NAME%%/*})' >> $BASH_ENV
+            echo 'export TAG_TYPE=$(echo ${TAG_NAME%%/*})' >> $BASH_ENV
+            echo 'export APISIX_TAG_VERSION=$(echo ${TAG_NAME##*/})' >> $BASH_ENV
+            echo 'export APISIX_BASE_TAG_VERSION=$(echo ${TAG_NAME##*/})' >> $BASH_ENV
             source $BASH_ENV
 
             echo "tag type: $TAG_TYPE"
