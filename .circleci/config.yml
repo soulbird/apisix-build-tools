@@ -116,9 +116,6 @@ jobs:
       image: ubuntu-2004:202101-01
     resource_class: arm.medium
     parameters:
-      tag_type:
-        type: env_var_name
-        default: TAG_TYPE
       aaa:
         type: string
     environment:
@@ -155,10 +152,8 @@ jobs:
             source $BASH_ENV
 
       - when:
-          condition:
-            matches: 
-              pattern: "^apisix//*"
-              value: << parameters.aaa >>
+          condition: << parameters.aaa >>
+            #matches: { pattern: "^apisix//*", value: << parameters.aaa >> }
             #equal: [ "apisix", "${<< parameters.tag_type >>}" ]
           steps:
             - run:
