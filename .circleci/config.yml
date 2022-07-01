@@ -119,6 +119,8 @@ jobs:
       tag_type:
         type: env_var_name
         default: TAG_TYPE
+      aaa:
+        type: string
     environment:
       - VAR_DEB_WORKBENCH_DIR: /tmp/output
       - VAR_PACKAGE_OS: debian
@@ -156,7 +158,7 @@ jobs:
           condition:
             matches: 
               pattern: "^apisix//*"
-              value: "apisix/2.14.1"
+              value: << parameters.aaa >>
             #equal: [ "apisix", "${<< parameters.tag_type >>}" ]
           steps:
             - run:
@@ -220,6 +222,7 @@ workflows:
   build-and-publish-debian-package:
     jobs:
       - build-and-publish-debian-arm64-package:
+        aaa: "apisix/2.14.1"
         filter:
           tags:
             only: /^apisix.*/
