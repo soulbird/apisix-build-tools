@@ -150,8 +150,8 @@ jobs:
 
       - when:
           condition:
-            matches: { pattern: "^apisix/*", value: <<pipeline.git.tag>>}
-            #equal: [ "apisx", "${TAG_TYPE}" ]
+            #matches: { pattern: "^apisix/*", value: <<pipeline.git.tag>>}
+            equal: [ "apisx", "${TAG_TYPE}" ]
           steps:
             - run:
                 name: build apisix deb package
@@ -159,10 +159,10 @@ jobs:
                   echo "apisix version: $APISIX_TAG_VERSION"
                   make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=${VAR_PACKAGE_OS} image_tag=${VAR_PACKAGE_OS_RELEASE}
                   mv ./output/apisix_${APISIX_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
-      - unless:
+      - when:
           condition:
-            matches: { pattern: "^apisix-base/*", value: <<pipeline.git.tag>>}
-            #equal: [ "apisx-base", "${TAG_TYPE}" ]
+            #matches: { pattern: "^apisix-base/*", value: <<pipeline.git.tag>>}
+            equal: [ "apisx-base", "${TAG_TYPE}" ]
           steps:
             - run:
                 name: build apisix-base deb package
