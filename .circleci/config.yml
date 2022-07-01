@@ -117,8 +117,8 @@ jobs:
     resource_class: arm.medium
     environment:
       - VAR_DEB_WORKBENCH_DIR: /tmp/output
-      - APISIX_TAG_VERSION: << parameters.tag_version >>
-      - APISIX_BASE_TAG_VERSION: << parameters.tag_version >>
+      - VAR_PACKAGE_OS: debian
+      - VAR_PACKAGE_OS_RELEASE: bullseye-slim
     
     steps:
       - checkout
@@ -154,7 +154,7 @@ jobs:
             - run:
                 name: build apisix deb package
                 command: |
-                  make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=debian image_tag=bullseye-slim
+                  make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=${VAR_PACKAGE_OS} image_tag=${VAR_PACKAGE_OS_RELEASE}
                   mv ./output/apisix_${APISIX_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
       - unless:
           condition:
@@ -164,7 +164,7 @@ jobs:
             - run:
                 name: build apisix-base deb package
                 command: |
-                  make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=debian image_tag=bullseye-slim
+                  make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=${VAR_PACKAGE_OS} image_tag=${VAR_PACKAGE_OS_RELEASE}
                   mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~debianbullseye-slim_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
 
       - run:
