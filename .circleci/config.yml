@@ -154,8 +154,8 @@ jobs:
             echo "apisix version: $APISIX_TAG_VERSION"
 
       - when:
-          condition: << parameters.aaa >>
-            #matches: { pattern: "^apisix//*", value: << parameters.aaa >> }
+          condition:
+            matches: { pattern: "^apisix//*", value: << pipeline.parameters.aaa >> }
             #equal: [ "apisix", "${<< parameters.tag_type >>}" ]
           steps:
             - run:
@@ -170,7 +170,8 @@ jobs:
           condition:
             matches: 
               pattern: "^apisix-base//*"
-              value: << pipeline.git.tag >>
+              #value: << pipeline.git.tag >>
+              value: << pipeline.parameters.aaa >>
             #equal: [ "apisix-base", "${TAG_TYPE}" ]
           steps:
             - run:
