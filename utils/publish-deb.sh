@@ -139,7 +139,7 @@ func_dists_rebuild() {
 
 func_dists_upload_ci_repo() {
     $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}" || true
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r -f --part-size 1000 "${1}" "cos://${2}/packages/${arch_path}${3}"
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "${1}" "cos://${2}/packages/${arch_path}${3}"
 }
 
 func_deb_upload() {
@@ -163,7 +163,7 @@ func_deb_upload() {
 
 func_repo_publish() {
     $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}" || true
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r -f --part-size 1000 "cos://${1}/packages/${arch_path}${3}/dists" "cos://${2}/packages/${arch_path}${3}/dists"
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "cos://${1}/packages/${arch_path}${3}/dists" "cos://${2}/packages/${arch_path}${3}/dists"
 }
 
 func_repo_backup_remove() {
@@ -203,7 +203,7 @@ repo_rebuild)
     func_dists_rebuild "/tmp/old_pool" "/tmp/freight" ${VAR_DEB_WORKBENCH_DIR} ${VAR_CODENAME}
     ;;
 repo_upload)
-    func_dists_upload_ci_repo "/tmp/freight/cache" "${VAR_COS_BUCKET_CI}" "${VAR_OS}"
+    func_dists_upload_ci_repo "/tmp/freight/cache/dists" "${VAR_COS_BUCKET_CI}" "${VAR_OS}"
     func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
     ;;
 repo_publish)
