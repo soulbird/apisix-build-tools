@@ -140,7 +140,7 @@ func_dists_rebuild() {
 
 func_dists_upload_ci_repo() {
     $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}" || true
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "${1}" "cos://${2}/packages/${arch_path}${3}/dists/"
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 512 "${1}" "cos://${2}/packages/${arch_path}${3}/dists/"
 }
 
 func_deb_upload() {
