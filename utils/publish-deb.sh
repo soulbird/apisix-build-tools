@@ -80,7 +80,7 @@ func_freight_utils_init() {
     mkdir -p ${2}
     freight-init --gpg=${1} --libdir=${2}/lib \
                 --cachedir=${2}/cache --conf=${2}/freight.conf \
-                --origin="Apache APISIX"
+                --archs=${ARCH} --origin="Apache APISIX"
 }
 
 func_dists_backup() { 
