@@ -143,6 +143,11 @@ func_dists_upload_ci_repo() {
     $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 512 "${1}" "cos://${2}/packages/${arch_path}${3}/dists/"
 }
 
+func_pool_upload_ci_repo() {
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}" || true
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 512 "${1}" "cos://${2}/packages/${arch_path}${3}/pool/"
+}
+
 func_deb_upload() {
     # ${1} - local path
     # ${2} - bucket name
@@ -209,7 +214,8 @@ repo_rebuild)
     ;;
 repo_upload)
     func_dists_upload_ci_repo "/tmp/freight/cache/dists" "${VAR_COS_BUCKET_CI}" "${VAR_OS}"
-    func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
+    func_pool_upload_ci_repo "/tmp/freight/cache/pool" "${VAR_COS_BUCKET_CI}" "${VAR_OS}"
+    #func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
     ;;
 repo_publish)
     func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
