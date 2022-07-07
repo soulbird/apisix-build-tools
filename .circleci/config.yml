@@ -118,6 +118,7 @@ jobs:
     environment:
       - VAR_DEB_WORKBENCH_DIR: /tmp/output
       - VAR_OS: debian
+      - VAR_CODENAME: bullseye
       - VAR_OS_RELEASE: bullseye-slim
     
     steps:
@@ -126,40 +127,38 @@ jobs:
           name: Init basic publish env
           command: |
             mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
-            wget https://github.com/tencentyun/coscli/archive/refs/tags/v0.11.0-beta.tar.gz
-            tar -zxvf v0.11.0-beta.tar.gz
-            cd coscli-0.11.0-beta && go build
-            sudo mv coscli ../
-            cat \<< EOF > "${HOME}/.cos.yaml"
-            cos:
-              base:
-                secretid: ${TENCENT_COS_SECRETID}
-                secretkey: ${TENCENT_COS_SECRETKEY}
-                protocol: https
-            EOF
+            sudo apt-get update
+            sudo apt install -y gpg
+            echo "${{ RPM_GPG_PRIV_KEY }}" >> /tmp/rpm-gpg-publish.private
+            echo "${{ RPM_GPG_PASSPHRASE }}" >> /tmp/rpm-gpg-publish.passphrase
+            sudo -E ./utils/publish-deb.sh init_cos_utils
+            sudo -E ./utils/publish-deb.sh init_freight_utils
+            sudo -E ./utils/publish-deb.sh init_gpg
 
       - when:
-          condition:
+          condition: << pipeline.git.branch >>
             # enclose a pattern in ^ and $ to avoid accidental partial matches
             # https://circleci.com/docs/2.0/configuration-reference#logic-statements
-            matches: { pattern: "^apisix/(.*)\\d+$", value: << pipeline.git.tag >> }
+            #matches: { pattern: "^apisix/(.*)\\d+$", value: << pipeline.git.tag >> }
           steps:
             - run:
                 name: build apisix deb package
                 command: |
+                  CIRCLE_TAG=apisix/2.13.2
                   APISIX_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix version: $APISIX_TAG_VERSION"
                   make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=${VAR_OS} image_tag=${VAR_OS_RELEASE}
                   mv ./output/apisix_${APISIX_TAG_VERSION}-0~${VAR_OS}${VAR_OS_RELEASE}_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
 
             - run:
-                name: upload deb package
+                name: publish package
                 command: |
-                  find "${VAR_DEB_WORKBENCH_DIR}" -type f -name "apisix_*.deb" \
-                    -exec echo "upload : {}" \; \
-                    -exec sh -c 'file=$(basename {}); \
-                            ./coscli -e "${VAR_COS_ENDPOINT}" \
-                                            cp --part-size 1000 {} "cos://${VAR_COS_BUCKET_REPO}/packages/arm64/debian/pool/main/a/apisix/${file}"' \;
+                  sudo -E ./utils/publish-deb.sh dists_backup
+                  sudo -E ./utils/publish-deb.sh repo_clone
+                  sudo -E ./utils/publish-deb.sh repo_rebuild
+                  sudo -E ./utils/publish-deb.sh repo_upload
+                  sudo -E ./utils/publish-deb.sh repo_publish
+                  sudo -E ./utils/publish-deb.sh repo_backup_remove
 
       - when:
           condition:
