@@ -24,12 +24,12 @@ if [[ $ARCH == "arm64" ]] || [[ $ARCH == "aarch64" ]]; then
 fi
 
 func_gpg_key_load() {
-    gpg --import --pinentry-mode loopback \
+    sudo gpg --import --pinentry-mode loopback \
         --batch --passphrase-file "${VAR_GPG_PASSPHRASE}" "${VAR_GPG_PRIV_KET}"
 
-    key=`gpg --list-keys --fingerprint | grep "${GPG_MAIL}" -B 1 \
+    sudo key=`gpg --list-keys --fingerprint | grep "${GPG_MAIL}" -B 1 \
     | tr -d ' ' | head -1 | awk 'BEGIN { FS = "\n" } ; { print $1":6:" }'`
-    gpg --import-ownertrust $key
+    sudo gpg --import-ownertrust $key
 
 #    cat > "${HOME}/.gnupg/gpg.conf" <<_EOC_
 #pinentry-mode loopback
@@ -45,7 +45,7 @@ func_cos_utils_install() {
         wget https://github.com/tencentyun/coscli/archive/refs/tags/${VAR_TENCENT_COS_UTILS_VERSION}.tar.gz
         tar -zxvf ${VAR_TENCENT_COS_UTILS_VERSION}.tar.gz
         cd coscli-* && go build
-        sudo mv coscli ../
+        mv coscli ../
         COS_CMD=./coscli
     else
         sudo curl -o /usr/bin/coscli -L "https://github.com/tencentyun/coscli/releases/download/${VAR_TENCENT_COS_UTILS_VERSION}/coscli-linux"
