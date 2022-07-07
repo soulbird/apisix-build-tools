@@ -152,15 +152,18 @@ func_deb_upload() {
     # so the directory is fixed: pool/main/a.
     # Regardless of other packages.
     export COS_CMD=$COS_CMD
+    export arch_path=$arch_path
+    export BUCKET=$2
+    export OS=$3
     find "${1}" -type f -name "apisix_*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix/${file}"' \;
 
     find "${1}" -type f -name "apisix-base*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix-base/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix-base/${file}"' \;
 }
 
 func_repo_publish() {
