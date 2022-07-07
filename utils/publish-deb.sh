@@ -193,7 +193,7 @@ dists_backup)
     ;;
 repo_clone)
     # eg: remote: debian/pool --> /tmp/old_pool
-    func_repo_clone "${VAR_COS_BUCKET_REPO}" "${VAR_OS}" "/tmp/old_pool"
+    func_pool_clone "${VAR_COS_BUCKET_REPO}" "${VAR_OS}" "/tmp/old_pool"
     ;;
 repo_rebuild)
     func_dists_rebuild "/tmp/old_pool" "/tmp/freight" ${VAR_DEB_WORKBENCH_DIR} ${VAR_CODENAME}
