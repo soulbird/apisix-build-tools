@@ -48,8 +48,8 @@ func_cos_utils_install() {
         sudo mv coscli ../
         COS_CMD=./coscli
     else
-        curl -o /usr/bin/coscli -L "https://github.com/tencentyun/coscli/releases/download/${VAR_TENCENT_COS_UTILS_VERSION}/coscli-linux"
-        chmod 755 /usr/bin/coscli
+        sudo curl -o /usr/bin/coscli -L "https://github.com/tencentyun/coscli/releases/download/${VAR_TENCENT_COS_UTILS_VERSION}/coscli-linux"
+        sudo chmod 755 /usr/bin/coscli
     fi
 }
 

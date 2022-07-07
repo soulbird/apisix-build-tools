@@ -131,7 +131,7 @@ jobs:
             sudo apt install -y gpg
             echo "${RPM_GPG_PRIV_KEY}" >> /tmp/rpm-gpg-publish.private
             echo "${RPM_GPG_PASSPHRASE}" >> /tmp/rpm-gpg-publish.passphrase
-            sudo -E ./utils/publish-deb.sh init_cos_utils
+            ./utils/publish-deb.sh init_cos_utils
             sudo -E ./utils/publish-deb.sh init_freight_utils
             sudo -E ./utils/publish-deb.sh init_gpg
 
