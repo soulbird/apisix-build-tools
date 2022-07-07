@@ -27,14 +27,14 @@ func_gpg_key_load() {
     gpg --import --pinentry-mode loopback \
         --batch --passphrase-file "${VAR_GPG_PASSPHRASE}" "${VAR_GPG_PRIV_KET}"
 
-    gpg --list-keys --fingerprint | grep "${GPG_MAIL}" -B 1 \
-    | tr -d ' ' | head -1 | awk 'BEGIN { FS = "\n" } ; { print $1":6:" }' \
-    | gpg --import-ownertrust
+    key=`gpg --list-keys --fingerprint | grep "${GPG_MAIL}" -B 1 \
+    | tr -d ' ' | head -1 | awk 'BEGIN { FS = "\n" } ; { print $1":6:" }'`
+    gpg --import-ownertrust $key
 
-    cat > "${HOME}/.gnupg/gpg.conf" <<_EOC_
-pinentry-mode loopback
-passphrase-file ${VAR_GPG_PASSPHRASE}
-_EOC_
+#    cat > "${HOME}/.gnupg/gpg.conf" <<_EOC_
+#pinentry-mode loopback
+#passphrase-file ${VAR_GPG_PASSPHRASE}
+#_EOC_
 }
 
 # =======================================
