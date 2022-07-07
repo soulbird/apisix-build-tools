@@ -78,9 +78,13 @@ func_freight_utils_init() {
     # ${1} - gpg mail
     # ${2} - freight work dir
     mkdir -p ${2}
+    archs="amd64"
+    if [[ $ARCH == "arm64" ]] || [[ $ARCH == "aarch64" ]]; then
+        archs="arm64"
+    fi
     freight-init --gpg=${1} --libdir=${2}/lib \
                 --cachedir=${2}/cache --conf=${2}/freight.conf \
-                --archs=${ARCH} --origin="Apache APISIX"
+                --archs=${archs} --origin="Apache APISIX"
 }
 
 func_dists_backup() { 
