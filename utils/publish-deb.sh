@@ -154,12 +154,12 @@ func_deb_upload() {
     find "${1}" -type f -name "apisix_*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    ${COS_CMD} -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix/${file}"' \;
 
     find "${1}" -type f -name "apisix-base*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    ${$COS_CMD} -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix-base/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix-base/${file}"' \;
 }
 
 func_repo_publish() {
