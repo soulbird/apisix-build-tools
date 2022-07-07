@@ -130,7 +130,7 @@ func_dists_rebuild() {
 
     freight-cache -c ${2}/freight.conf
 
-    for codename in `ls ${1}`
+    for codename in `ls ${2}/cache/dists`
     do
         rm -rf ${2}/cache/dists/${codename}
         mv ${2}/cache/dists/${codename}-* ${2}/cache/dists/${codename}
@@ -139,7 +139,7 @@ func_dists_rebuild() {
 
 func_dists_upload_ci_repo() {
     $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}" || true
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "${1}" "cos://${2}/packages/${arch_path}${3}"
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "${1}" "cos://${2}/packages/${arch_path}${3}/dists/"
 }
 
 func_deb_upload() {
