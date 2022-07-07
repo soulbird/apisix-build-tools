@@ -158,17 +158,17 @@ func_deb_upload() {
     find "${1}" -type f -name "apisix_*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 512 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix/${file}"' \;
 
     find "${1}" -type f -name "apisix-base*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix-base/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 512 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix-base/${file}"' \;
 }
 
 func_repo_publish() {
     $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}" || true
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "cos://${1}/packages/${arch_path}${3}/dists" "cos://${2}/packages/${arch_path}${3}/dists"
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 512 "cos://${1}/packages/${arch_path}${3}/dists" "cos://${2}/packages/${arch_path}${3}/dists"
 }
 
 func_repo_backup_remove() {
