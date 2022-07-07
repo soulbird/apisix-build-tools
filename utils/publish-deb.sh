@@ -134,7 +134,7 @@ func_dists_rebuild() {
     do
         rm -rf ${2}/cache/dists/${codename}
         mv ${2}/cache/dists/${codename}-* ${2}/cache/dists/${codename}
-        rm -rf ${2}/cache/dists/${codename}/.ref
+        rm -rf ${2}/cache/dists/${codename}/.refs
     done
 }
 
