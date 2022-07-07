@@ -134,6 +134,7 @@ func_dists_rebuild() {
     do
         rm -rf ${2}/cache/dists/${codename}
         mv ${2}/cache/dists/${codename}-* ${2}/cache/dists/${codename}
+        rm -rf ${2}/cache/dists/${codename}/.ref
     done
 }
 
@@ -150,12 +151,12 @@ func_deb_upload() {
     # We will only upload apisix and apisix-base,
     # so the directory is fixed: pool/main/a.
     # Regardless of other packages.
-    find "${1}" -type f -name "apsix_*.deb" \
+    find "${1}" -type f -name "apisix_*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
                     ${COS_CMD} -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix/${file}"' \;
 
-    find "${1}" -type f -name "apsix-base*.deb" \
+    find "${1}" -type f -name "apisix-base*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
                     ${$COS_CMD} -e "${VAR_COS_ENDPOINT}" cp {} --part-size 1000 "cos://${2}/packages/${arch_path}${3}/pool/main/a/apisix-base/${file}"' \;
