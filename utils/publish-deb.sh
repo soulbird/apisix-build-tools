@@ -130,7 +130,7 @@ func_dists_rebuild() {
 
     freight-cache -c ${2}/freight.conf
 
-    for codename in `ls ${2}/cache/dists`
+    for codename in `ls ${2}/cache/pool`
     do
         rm -rf ${2}/cache/dists/${codename}
         mv ${2}/cache/dists/${codename}-* ${2}/cache/dists/${codename}
