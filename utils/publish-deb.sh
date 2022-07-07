@@ -24,17 +24,17 @@ if [[ $ARCH == "arm64" ]] || [[ $ARCH == "aarch64" ]]; then
 fi
 
 func_gpg_key_load() {
-    sudo gpg --import --pinentry-mode loopback \
+    gpg --import --pinentry-mode loopback \
         --batch --passphrase-file "${VAR_GPG_PASSPHRASE}" "${VAR_GPG_PRIV_KET}"
 
-    sudo key=`gpg --list-keys --fingerprint | grep "${GPG_MAIL}" -B 1 \
-    | tr -d ' ' | head -1 | awk 'BEGIN { FS = "\n" } ; { print $1":6:" }'`
-    sudo gpg --import-ownertrust $key
+    gpg --list-keys --fingerprint | grep "${GPG_MAIL}" -B 1 \
+    | tr -d ' ' | head -1 | awk 'BEGIN { FS = "\n" } ; { print $1":6:" }' \
+    | gpg --import-ownertrust
 
-#    cat > "${HOME}/.gnupg/gpg.conf" <<_EOC_
-#pinentry-mode loopback
-#passphrase-file ${VAR_GPG_PASSPHRASE}
-#_EOC_
+    cat > "${HOME}/.gnupg/gpg.conf" <<_EOC_
+pinentry-mode loopback
+passphrase-file ${VAR_GPG_PASSPHRASE}
+_EOC_
 }
 
 # =======================================
