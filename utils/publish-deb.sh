@@ -21,6 +21,7 @@ ARCH=${ARCH:-`(uname -m | tr '[:upper:]' '[:lower:]')`}
 arch_path=""
 if [[ $ARCH == "arm64" ]] || [[ $ARCH == "aarch64" ]]; then
     arch_path="arm64/"
+    COS_CMD="${PWD}/coscli"
 fi
 
 func_gpg_key_load() {
@@ -46,7 +47,6 @@ func_cos_utils_install() {
         tar -zxvf ${VAR_TENCENT_COS_UTILS_VERSION}.tar.gz
         cd coscli-* && go build
         mv coscli ../
-        COS_CMD=./coscli
     else
         sudo curl -o /usr/bin/coscli -L "https://github.com/tencentyun/coscli/releases/download/${VAR_TENCENT_COS_UTILS_VERSION}/coscli-linux"
         sudo chmod 755 /usr/bin/coscli
