@@ -129,8 +129,8 @@ jobs:
             mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
             sudo apt-get update
             sudo apt install -y gpg
-            echo "${RPM_GPG_PRIV_KEY}" >> /tmp/rpm-gpg-publish.private
-            echo "${RPM_GPG_PASSPHRASE}" >> /tmp/rpm-gpg-publish.passphrase
+            echo "${RPM_GPG_PRIV_KEY}" >> /tmp/deb-gpg-publish.private
+            echo "${RPM_GPG_PASSPHRASE}" >> /tmp/deb-gpg-publish.passphrase
             ./utils/publish-deb.sh init_cos_utils
             sudo -E ./utils/publish-deb.sh init_freight_utils
             sudo -E ./utils/publish-deb.sh init_gpg
