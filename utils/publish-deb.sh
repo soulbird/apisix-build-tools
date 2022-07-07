@@ -87,7 +87,7 @@ func_dists_backup() {
     # ${1} - bucket name
     # ${2} - COS path
     # ${3} - backup tag
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "cos://${1}/packages/${arch_path}${2}/dists" "cos://${1}/packages/${arch_path}backup/${2}_dists_${3}"
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 1000 "cos://${1}/packages/${arch_path}${2}/dists" "cos://${1}/packages/${arch_path}backup/${2}_dists_${3}" || true
 }
 
 func_pool_clone() {
@@ -166,7 +166,7 @@ func_repo_backup_remove() {
     # ${1} - bucket name
     # ${2} - COS path
     # ${3} - backup tag
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${1}/packages/${arch_path}backup/${2}_dists_${3}"
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${1}/packages/${arch_path}backup/${2}_dists_${3}" || true
 }
 
 # =======================================
