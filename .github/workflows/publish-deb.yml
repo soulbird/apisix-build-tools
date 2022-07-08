@@ -14,6 +14,7 @@ jobs:
       VAR_COS_ENDPOINT: ${{ secrets.VAR_COS_ENDPOINT }}
       VAR_DEB_WORKBENCH_DIR: /tmp/output
       VAR_OS: debian
+      VAR_CODENAME: bullseye
       VAR_OS_RELEASE: bullseye-slim
 
     steps:
@@ -79,14 +80,14 @@ jobs:
         uses: actions/upload-artifact@v2.2.3
         with:
           name: "apisix_${{ steps.tag_env.outputs.version}}-0~${VAR_OS}${VAR_OS_RELEASE}_amd64.deb"
-          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix_${{ steps.tag_env.outputs.version}}-0~${env.VAR_OS}${env.VAR_OS_RELEASE}_amd64.deb"
+          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix_${{ steps.tag_env.outputs.version}}-0~${{ env.VAR_OS }}${{ env.VAR_OS_RELEASE }}_amd64.deb"
 
       - name: Upload apisix-base Artifact
         if: ${{ startsWith(steps.tag_type.outputs.version, 'apisix-base/') }}
         uses: actions/upload-artifact@v2.2.3
         with:
           name: "apisix-base_${{ steps.tag_env.outputs.version}}-0~${VAR_OS}${VAR_OS_RELEASE}_amd64.deb"
-          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix-base_${{ steps.tag_env.outputs.version}}-0~${env.VAR_OS}${env.VAR_OS_RELEASE}_amd64.deb"
+          path: "${{ env.VAR_DEB_WORKBENCH_DIR }}/apisix-base_${{ steps.tag_env.outputs.version}}-0~${{ env.VAR_OS }}${{ env.VAR_OS_RELEASE }}_amd64.deb"
 
       - name: backup dists to ci bucket
         run:
@@ -97,8 +98,6 @@ jobs:
           sudo -E ./utils/publish-deb.sh repo_clone
 
       - name: rebuild deb repo
-        env:
-          VAR_CODENAME: bullseye
         run:
           sudo -E ./utils/publish-deb.sh repo_rebuild
 

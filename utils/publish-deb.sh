@@ -155,15 +155,16 @@ func_deb_upload() {
     export arch_path=$arch_path
     export BUCKET=$2
     export OS=$3
+    export CODENAME=$4
     find "${1}" -type f -name "apisix_*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 512 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 512 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/${CODENAME}/main/a/apisix/${file}"' \;
 
     find "${1}" -type f -name "apisix-base*.deb" \
         -exec echo "upload : {}" \; \
         -exec sh -c 'file=$(basename {}); \
-                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 512 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/main/a/apisix-base/${file}"' \;
+                    $COS_CMD -e "${VAR_COS_ENDPOINT}" cp {} --part-size 512 "cos://${BUCKET}/packages/${arch_path}${OS}/pool/${CODENAME}/main/a/apisix-base/${file}"' \;
 }
 
 func_repo_publish() {
@@ -209,7 +210,7 @@ repo_rebuild)
     ;;
 repo_upload)
     func_dists_upload_ci_repo "/tmp/freight/cache/dists" "${VAR_COS_BUCKET_CI}" "${VAR_OS}"
-    func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
+    func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}" "${VAR_CODENAME}"
     ;;
 repo_publish)
     func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
