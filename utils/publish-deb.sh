@@ -167,7 +167,7 @@ func_deb_upload() {
 }
 
 func_repo_publish() {
-    $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}" || true
+    $COS_CMD -e "${VAR_COS_ENDPOINT}" rm -r -f "cos://${2}/packages/${arch_path}${3}/dists" || true
     $COS_CMD -e "${VAR_COS_ENDPOINT}" cp -r --part-size 512 "cos://${1}/packages/${arch_path}${3}/dists" "cos://${2}/packages/${arch_path}${3}/dists"
 }
 
