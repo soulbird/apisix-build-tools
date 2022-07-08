@@ -209,7 +209,8 @@ repo_rebuild)
     ;;
 repo_upload)
     func_dists_upload_ci_repo "/tmp/freight/cache/dists" "${VAR_COS_BUCKET_CI}" "${VAR_OS}"
-    func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
+    #func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
+    func_deb_upload "${VAR_DEB_WORKBENCH_DIR}" "${VAR_COS_BUCKET_CI}" "${VAR_OS}"
     ;;
 repo_publish)
     func_repo_publish "${VAR_COS_BUCKET_CI}" "${VAR_COS_BUCKET_REPO}" "${VAR_OS}"
