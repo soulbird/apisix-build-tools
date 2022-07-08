@@ -1,7 +1,7 @@
 name: Build and Publish Package
 
 on:
-  create
+  push
 
 jobs:
   publish_apisix:
@@ -29,18 +29,18 @@ jobs:
           mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
 
       - name: Extract Tags name
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
         id: tag_env
         shell: bash
         run: |
           echo "##[set-output name=version;]$(echo ${GITHUB_REF##*/})"
 
       - name: Extract Tags Type
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
         id: tag_type
         shell: bash
         run: |
-          echo "##[set-output name=version;]$(echo ${GITHUB_REF#refs/tags/})"
+          echo "##[set-output name=version;]$(echo ${GITHUB_REF#refs/heads/})"
 
       - name: Build apisix deb Package
         if: ${{ startsWith(steps.tag_type.outputs.version, 'apisix/') }}
