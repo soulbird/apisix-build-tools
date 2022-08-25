@@ -37,6 +37,7 @@ jobs:
                 command: |
                   echo 'export PACK_SUFFIX=.el<< parameters.var_os_release >>.aarch64.rpm' >> $BASH_ENV
       - unless:
+          condition: << parameters.var_build_rpm >>
           steps:
             - run:
                 command: |
