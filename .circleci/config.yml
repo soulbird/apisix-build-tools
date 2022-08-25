@@ -70,6 +70,7 @@ workflows:
   debian-arm64-package:
     jobs:
       - build-arm64-deb-package:
+          name: debian-bullseye
           var_os: debian
           var_os_release: bullseye-slim
           release_tag: apisix/2.15.0
@@ -78,6 +79,7 @@ workflows:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
       - build-arm64-deb-package:
+          name: debian-buster
           var_os: debian
           var_os_release: buster-slim
           release_tag: apisix/2.15.0
@@ -86,6 +88,7 @@ workflows:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
       - build-arm64-deb-package:
+          name: debian-stretch
           var_os: debian
           var_os_release: stretch-slim
           release_tag: apisix/2.15.0
@@ -94,6 +97,7 @@ workflows:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
       - build-arm64-deb-package:
+          name: ubuntu-bionic
           var_os: ubuntu
           var_os_release: bionic
           release_tag: apisix/2.15.0
@@ -102,6 +106,7 @@ workflows:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
       - build-arm64-deb-package:
+          name: ubuntu-focal
           var_os: ubuntu
           var_os_release: focal
           release_tag: apisix/2.15.0
