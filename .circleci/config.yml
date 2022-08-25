@@ -65,7 +65,7 @@ jobs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  debian-bullseye-package:
+  debian-arm64-package:
     jobs:
       - build-arm64-deb-package:
           var_os: debian
