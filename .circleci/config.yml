@@ -10,6 +10,9 @@ jobs:
         type: string
       var_os_release:
         type: string
+      var_build_rpm:
+        type: boolean
+        default: false
       release_tag:
         type: string
     machine:
@@ -27,7 +30,17 @@ jobs:
           command: |
             mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
             sudo apt-get update
-
+      - when:
+          condition: << parameters.var_build_rpm >>
+          steps:
+            - run:
+                command: |
+                  echo 'export PACK_SUFFIX=.el<< parameters.var_os_release >>.aarch64.rpm' >> $BASH_ENV
+      - unless:
+          steps:
+            - run:
+                command: |
+                   echo 'export PACK_SUFFIX=~<< parameters.var_os >><< parameters.var_os_release >>_arm64.deb' >> $BASH_ENV
       - when:
           condition:
             # enclose a pattern in ^ and $ to avoid accidental partial matches
