@@ -38,9 +38,10 @@ jobs:
             - run:
                 name: build apisix deb package
                 command: |
+                  CIRCLE_TAG=<<parameters.release_tag>>
                   APISIX_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix version: $APISIX_TAG_VERSION"
-                  make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base= << parameters.var_os >> image_tag= << parameters.var_os_release >>
+                  make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
                   mv ./output/apisix_${APISIX_TAG_VERSION}-0~<< parameters.var_os >><< parameters.var_os_release >>_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
 
             - store_artifacts:
@@ -54,9 +55,10 @@ jobs:
             - run:
                 name: build apisix-base deb package
                 command: |
+                  CIRCLE_TAG=<<parameters.release_tag>>
                   APISIX_BASE_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix-base version: $APISIX_BASE_TAG_VERSION"
-                  make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base= << parameters.var_os >> image_tag= << parameters.var_os_release >>
+                  make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
                   mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~<< parameters.var_os >><< parameters.var_os_release >>_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
 
             - store_artifacts:
