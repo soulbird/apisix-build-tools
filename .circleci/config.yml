@@ -69,7 +69,7 @@ workflows:
     jobs:
       - build-arm64-deb-package:
           var_os: debian
-          var_release: bullseye-slim
+          var_os_release: bullseye-slim
           release_tag: apisix/2.15.0
           filters:
             tags:
@@ -77,7 +77,7 @@ workflows:
               only: 0825-pack-all-arm64
       - build-arm64-deb-package:
           var_os: debian
-          var_release: bookworm-slim
+          var_os_release: bookworm-slim
           release_tag: apisix/2.15.0
           filters:
             tags:
