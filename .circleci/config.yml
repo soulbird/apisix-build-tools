@@ -4,7 +4,7 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  build-arm64-deb-package:
+  build-arm64-package:
     parameters:
       var_os:
         type: string
@@ -35,13 +35,13 @@ jobs:
           steps:
             - run:
                 command: |
-                  echo 'export PACK_SUFFIX=.el<< parameters.var_os_release >>.aarch64.rpm' >> $BASH_ENV
+                  echo 'export PACK_TYPE=rpm' >> $BASH_ENV
       - unless:
           condition: << parameters.var_build_rpm >>
           steps:
             - run:
                 command: |
-                   echo 'export PACK_SUFFIX=~<< parameters.var_os >><< parameters.var_os_release >>_arm64.deb' >> $BASH_ENV
+                   echo 'export PACK_TYPE=deb' >> $BASH_ENV
       - when:
           condition:
             # enclose a pattern in ^ and $ to avoid accidental partial matches
@@ -50,13 +50,13 @@ jobs:
             matches: { pattern: "^apisix/(.*)\\d+$", value: << parameters.release_tag >> }
           steps:
             - run:
-                name: build apisix deb package
+                name: build apisix package
                 command: |
                   CIRCLE_TAG=<<parameters.release_tag>>
                   APISIX_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix version: $APISIX_TAG_VERSION"
-                  make package type=deb app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
-                  mv ./output/apisix_${APISIX_TAG_VERSION}-0~<< parameters.var_os >><< parameters.var_os_release >>_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
+                  make package type=${PACK_TYPE} app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
+                  mv ./output/apisix_*.${PACK_TYPE} ${VAR_DEB_WORKBENCH_DIR}
 
             - store_artifacts:
                 path: /tmp/output
@@ -67,12 +67,12 @@ jobs:
             matches: { pattern: "^apisix-base/(.*)\\d+$", value: << parameters.release_tag >> }
           steps:
             - run:
-                name: build apisix-base deb package
+                name: build apisix-base package
                 command: |
                   CIRCLE_TAG=<<parameters.release_tag>>
                   APISIX_BASE_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix-base version: $APISIX_BASE_TAG_VERSION"
-                  make package type=deb app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
+                  make package type=${PACK_TYPE} app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
                   mv ./output/apisix-base_${APISIX_BASE_TAG_VERSION}-0~<< parameters.var_os >><< parameters.var_os_release >>_arm64.deb ${VAR_DEB_WORKBENCH_DIR}
 
             - store_artifacts:
@@ -83,7 +83,7 @@ jobs:
 workflows:
   debian-arm64-package:
     jobs:
-      - build-arm64-deb-package:
+      - build-arm64-package:
           name: debian-bullseye
           var_os: debian
           var_os_release: bullseye-slim
@@ -92,7 +92,7 @@ workflows:
             tags:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
-      - build-arm64-deb-package:
+      - build-arm64-package:
           name: debian-buster
           var_os: debian
           var_os_release: buster-slim
@@ -101,7 +101,7 @@ workflows:
             tags:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
-      - build-arm64-deb-package:
+      - build-arm64-package:
           name: debian-stretch
           var_os: debian
           var_os_release: stretch-slim
@@ -110,7 +110,7 @@ workflows:
             tags:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
-      - build-arm64-deb-package:
+      - build-arm64-package:
           name: ubuntu-bionic
           var_os: ubuntu
           var_os_release: bionic
@@ -119,10 +119,19 @@ workflows:
             tags:
               #only: /^apisix.*/
               only: 0825-pack-all-arm64
-      - build-arm64-deb-package:
+      - build-arm64-package:
           name: ubuntu-focal
           var_os: ubuntu
           var_os_release: focal
+          release_tag: apisix/2.15.0
+          filters:
+            tags:
+              #only: /^apisix.*/
+              only: 0825-pack-all-arm64
+      - build-arm64-package:
+          name: centos 7
+          var_os: centos
+          var_os_release: 7
           release_tag: apisix/2.15.0
           filters:
             tags:
