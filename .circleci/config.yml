@@ -59,7 +59,7 @@ jobs:
                   mv ./output/apisix*.${PACK_TYPE} ${VAR_WORKBENCH_DIR}
 
             - store_artifacts:
-                path: /tmp/output
+                path: ${VAR_WORKBENCH_DIR}
 
       - when:
           condition:
@@ -143,7 +143,7 @@ workflows:
           var_os: centos
           var_os_release: "8"
           var_build_rpm: true
-          release_tag: apisix/2.15.0
+          release_tag: apisix-base/2.15.0
           filters:
             tags:
               #only: /^apisix.*/
