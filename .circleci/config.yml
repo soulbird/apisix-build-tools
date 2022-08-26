@@ -132,6 +132,7 @@ workflows:
           name: centos 7
           var_os: centos
           var_os_release: "7"
+          var_build_rpm: true
           release_tag: apisix/2.15.0
           filters:
             tags:
