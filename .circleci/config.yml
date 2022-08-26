@@ -19,7 +19,7 @@ jobs:
       image: ubuntu-2004:202101-01
     resource_class: arm.medium
     environment:
-      - VAR_DEB_WORKBENCH_DIR: /tmp/output
+      - VAR_WORKBENCH_DIR: /tmp/output
       #- VAR_OS: debian
       #- VAR_OS_RELEASE: bullseye-slim
     
@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Init basic publish env
           command: |
-            mkdir -p "${VAR_DEB_WORKBENCH_DIR}"
+            mkdir -p "${VAR_WORKBENCH_DIR}"
             sudo apt-get update
       - when:
           condition: << parameters.var_build_rpm >>
@@ -56,7 +56,7 @@ jobs:
                   APISIX_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix version: $APISIX_TAG_VERSION"
                   make package type=${PACK_TYPE} app=apisix openresty=apisix-base checkout=${APISIX_TAG_VERSION} version=${APISIX_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
-                  mv ./output/apisix*.${PACK_TYPE} ${VAR_DEB_WORKBENCH_DIR}
+                  mv ./output/apisix*.${PACK_TYPE} ${VAR_WORKBENCH_DIR}
 
             - store_artifacts:
                 path: /tmp/output
@@ -73,7 +73,7 @@ jobs:
                   APISIX_BASE_TAG_VERSION=$(echo ${CIRCLE_TAG##*/})
                   echo "apisix-base version: $APISIX_BASE_TAG_VERSION"
                   make package type=${PACK_TYPE} app=apisix-base checkout=${APISIX_BASE_TAG_VERSION} version=${APISIX_BASE_TAG_VERSION} image_base=<< parameters.var_os >> image_tag=<< parameters.var_os_release >>
-                  mv ./output/apisix-base*.${PACK_TYPE} ${VAR_DEB_WORKBENCH_DIR}
+                  mv ./output/apisix-base*.${PACK_TYPE} ${VAR_WORKBENCH_DIR}
 
             - store_artifacts:
                 path: /tmp/output
@@ -132,6 +132,16 @@ workflows:
           name: centos 7
           var_os: centos
           var_os_release: "7"
+          var_build_rpm: true
+          release_tag: apisix/2.15.0
+          filters:
+            tags:
+              #only: /^apisix.*/
+              only: 0825-pack-all-arm64
+      - build-arm64-package:
+          name: centos 8
+          var_os: centos
+          var_os_release: "8"
           var_build_rpm: true
           release_tag: apisix/2.15.0
           filters:
