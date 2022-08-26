@@ -59,7 +59,7 @@ jobs:
                   mv ./output/apisix*.${PACK_TYPE} ${VAR_WORKBENCH_DIR}
 
             - store_artifacts:
-                path: ${VAR_WORKBENCH_DIR}
+                path: /tmp/output
 
       - when:
           condition:
