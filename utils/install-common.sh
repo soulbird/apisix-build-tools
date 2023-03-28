@@ -39,7 +39,13 @@ install_openresty_deb() {
     DEBIAN_FRONTEND=noninteractive apt-get install -y libreadline-dev lsb-release libpcre3 libpcre3-dev libldap2-dev libssl-dev perl build-essential
     DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends wget gnupg ca-certificates
     wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
-    echo "deb http://openresty.org/package/${arch_path}ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/openresty.list
+    if [[ $IMAGE_BASE == "ubuntu" ]]; then
+        echo "deb http://openresty.org/package/${arch_path}ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/openresty.list
+    fi
+
+    if [[ $IMAGE_BASE == "debian" ]]; then
+        echo "deb http://openresty.org/package/${arch_path}debian $(lsb_release -sc) openresty" | tee /etc/apt/sources.list.d/openresty.list
+    fi
     DEBIAN_FRONTEND=noninteractive apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get install -y openresty-openssl111-dev openresty
 }
@@ -116,12 +122,13 @@ install_apisix() {
 }
 
 install_golang() {
+    GO_VERSION="1.19.6"
     GO_ARCH="amd64"
     if [[ $ARCH == "arm64" ]] || [[ $ARCH == "aarch64" ]]; then
         GO_ARCH="arm64"
     fi
-    wget https://dl.google.com/go/go1.16.linux-"${GO_ARCH}".tar.gz
-    tar -xzf go1.16.linux-"${GO_ARCH}".tar.gz
+    wget https://dl.google.com/go/go"${GO_VERSION}".linux-"${GO_ARCH}".tar.gz
+    tar -xzf go"${GO_VERSION}".linux-"${GO_ARCH}".tar.gz
     mv go /usr/local
 }
 
